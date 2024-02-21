@@ -15,7 +15,7 @@ export default function parseMessage(rawMessage: string): ParsedTwitchMessage | 
     tags: null,
     source: null,
     command: null,
-    message: null,
+    message: '',
   };
 
   let rawTags = null;

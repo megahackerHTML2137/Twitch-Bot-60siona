@@ -6,7 +6,8 @@ import handleCommand from '../Commands/CommandsHandler';
 
 // Types
 import type { BotDefaultProperties } from '../../types/bot';
-import type { ParsedTwitchMessage, TwitchParsedCommand } from '../../types/parsedMessage';
+import type { ParsedTwitchMessage } from '../../types/parsedMessage';
+import type { BotAnswer } from '../../types/commandHandler';
 
 const TWITCH_WEBSOCKET_IRC_SERVER = 'ws://irc-ws.chat.twitch.tv:80';
 const HELLO_MESSAGE = 'kapus kapus inaczej 60siatka';
@@ -45,11 +46,11 @@ class TwitchClient {
   private handleMessage(twitchMessage: string) {
     const parsedMessage: ParsedTwitchMessage | null = parseMessage(twitchMessage);
 
-    if (parsedMessage) {
-      const answer = handleCommand(parsedMessage);
+    if (parsedMessage && parsedMessage.command) {
+      const botAnswer: BotAnswer = handleCommand(parsedMessage);
 
-      if (answer) {
-        this.sendMessage(answer);
+      if (botAnswer !== null) {
+        this.sendMessage(botAnswer);
       } else {
         console.log(parsedMessage);
       }
@@ -58,8 +59,14 @@ class TwitchClient {
     }
   }
 
-  public sendMessage(message: string) {
-    this.ws.send(`PRIVMSG #hwdpjphttp692137 :${message}`);
+  public sendMessage(answer: BotAnswer) {
+    if (answer) {
+      if (answer.channel) {
+        this.ws.send(`${answer.type} ${answer.channel} :${answer.message}`);
+      } else {
+        this.ws.send(`${answer.type} :${answer.message}`);
+      }
+    }
   }
 }
 
