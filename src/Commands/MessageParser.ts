@@ -15,13 +15,13 @@ export default function parseMessage(rawMessage: string): ParsedTwitchMessage | 
     tags: null,
     source: null,
     command: null,
-    parameters: null,
+    message: null,
   };
 
   let rawTags = null;
   let rawSource = null;
   let rawCommand = null;
-  let rawParameters = null;
+  let rawParameters = '';
 
   let index = 0;
 
@@ -62,7 +62,7 @@ export default function parseMessage(rawMessage: string): ParsedTwitchMessage | 
 
   parsedMessage.command = parseCommand(rawCommand);
 
-  if (null == parsedMessage.command) {
+  if (parsedMessage.command === null) {
     // Is null if it's a message we don't care about.
     return null;
   } else {
@@ -72,7 +72,7 @@ export default function parseMessage(rawMessage: string): ParsedTwitchMessage | 
     }
 
     parsedMessage.source = parseSource(rawSource);
-    parsedMessage.parameters = rawParameters;
+    parsedMessage.message = rawParameters.trim();
 
     if (rawParameters && rawParameters[0] === '!') {
       // The user entered a bot command in the chat window.
@@ -199,21 +199,25 @@ function parseTags(rawTags: string): TwitchParsedTags {
         if (tagValue) {
           let dictEmotes: EmotesObjectsDictionary = {}; // Holds a list of emote objects.
           // The key is the emote's ID.
-          let emotes = tagValue.split('/');
-          emotes.forEach((emote) => {
-            let emoteParts = emote.split(':');
+          let emotes: string[] = tagValue.split('/');
 
-            let textPositionsList: EmotesPositionList[] = [];
+          emotes.forEach((emote) => {
+            let emoteParts: string[] = emote.split(':');
+
             // The list of position objects that identify
             // the location of the emote in the chat message.
-            let positions = emoteParts[1].split(',');
+            let textPositionsList: EmotesPositionList[] = [];
+            let positions: string[] = emoteParts[1].split(',');
+
             positions.forEach((position) => {
-              let positionParts = position.split('-');
+              let positionParts: string[] = position.split('-');
+
               textPositionsList.push({
                 startPosition: positionParts[0],
                 endPosition: positionParts[1],
               });
             });
+            console.log('type', typeof textPositionsList, textPositionsList);
 
             dictEmotes[emoteParts[0]] = textPositionsList;
           });
@@ -227,9 +231,10 @@ function parseTags(rawTags: string): TwitchParsedTags {
       case 'emote-sets':
         // emote-sets=0,33,50,237
         if (tagValue) {
-          let emoteSetIds: EmotesID = tagValue.split(','); // Array of emote set IDs.
+          let emoteSetIds: string[] = tagValue.split(','); // Array of emote set IDs.
           dictParsedTags[parsedTag[0]] = emoteSetIds;
         }
+
         break;
       default:
         // If the tag is in the list of tags to ignore, ignore

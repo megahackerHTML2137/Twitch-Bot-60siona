@@ -1,10 +1,12 @@
-import ws, { WebSocket } from 'ws';
+import { WebSocket } from 'ws';
 import 'dotenv/config';
 
-import parseMessage from '../Commands/parseMessage';
+import parseMessage from '../Commands/MessageParser';
+import handleCommand from '../Commands/CommandsHandler';
 
 // Types
 import type { BotDefaultProperties } from '../../types/bot';
+import type { ParsedTwitchMessage, TwitchParsedCommand } from '../../types/parsedMessage';
 
 const TWITCH_WEBSOCKET_IRC_SERVER = 'ws://irc-ws.chat.twitch.tv:80';
 const HELLO_MESSAGE = 'kapus kapus inaczej 60siatka';
@@ -41,7 +43,23 @@ class TwitchClient {
   }
 
   private handleMessage(twitchMessage: string) {
-    console.log(parseMessage(twitchMessage));
+    const parsedMessage: ParsedTwitchMessage | null = parseMessage(twitchMessage);
+
+    if (parsedMessage) {
+      const answer = handleCommand(parsedMessage);
+
+      if (answer) {
+        this.sendMessage(answer);
+      } else {
+        console.log(parsedMessage);
+      }
+    } else {
+      console.log('Fuck this message:', parsedMessage);
+    }
+  }
+
+  public sendMessage(message: string) {
+    this.ws.send(`PRIVMSG #hwdpjphttp692137 :${message}`);
   }
 }
 

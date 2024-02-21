@@ -2,16 +2,16 @@ export interface ParsedTwitchMessage {
   tags: TwitchParsedTags | null;
   source: TwitchParsedSource | null;
   command: TwitchParsedCommand | null;
-  parameters: string | null;
+  message: string | null;
 }
 
 // Command
 interface TwitchCommand {
-  type: string | null;
+  type: string;
   botCommand?: string;
   botCommandParams?: string;
-  channel?: string | null;
-  isCapRequestEnabled?: boolean | null;
+  channel?: string;
+  isCapRequestEnabled?: boolean;
 }
 
 export type TwitchParsedCommand = TwitchCommand | null;
@@ -24,7 +24,7 @@ export type TwitchParsedTags = {
 export type BadgeObjectsDictionary = { [key: string]: string };
 
 // Emotes
-export type EmotesObjectsDictionary = { [key: string]: EmotesPositionList[] | null };
+export type EmotesObjectsDictionary = { [key: string]: EmotesPositionList[] };
 export type EmotesPositionList = { startPosition: string; endPosition: string };
 export type EmotesID = string[];
 
