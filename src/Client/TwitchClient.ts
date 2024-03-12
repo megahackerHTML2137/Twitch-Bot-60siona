@@ -7,7 +7,7 @@ import handleCommand from '../Commands/CommandsHandler';
 // Types
 import type { BotDefaultProperties } from '../../types/bot';
 import type { ParsedTwitchMessage } from '../../types/parsedMessage';
-import type { BotAnswer } from '../../types/commandHandler';
+import type { AnswerType, BotAnswer } from '../../types/commandHandler';
 
 const TWITCH_WEBSOCKET_IRC_SERVER = 'ws://irc-ws.chat.twitch.tv:80';
 const HELLO_MESSAGE = 'kapus kapus inaczej 60siatka';
@@ -46,26 +46,20 @@ class TwitchClient {
   private handleMessage(twitchMessage: string) {
     const parsedMessage: ParsedTwitchMessage | null = parseMessage(twitchMessage);
 
-    if (parsedMessage && parsedMessage.command) {
+    if (parsedMessage) {
       const botAnswer: BotAnswer = handleCommand(parsedMessage);
 
-      if (botAnswer !== null) {
+      if (botAnswer) {
         this.sendMessage(botAnswer);
-      } else {
-        console.log(parsedMessage);
       }
-    } else {
-      console.log('Fuck this message:', parsedMessage);
     }
   }
 
-  public sendMessage(answer: BotAnswer) {
-    if (answer) {
-      if (answer.channel) {
-        this.ws.send(`${answer.type} ${answer.channel} :${answer.message}`);
-      } else {
-        this.ws.send(`${answer.type} :${answer.message}`);
-      }
+  public sendMessage(answer: AnswerType) {
+    if (answer.channel) {
+      this.ws.send(`${answer.type} ${answer.channel} :${answer.message}`);
+    } else {
+      this.ws.send(`${answer.type} :${answer.message}`);
     }
   }
 }
