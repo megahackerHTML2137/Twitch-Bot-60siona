@@ -1,3 +1,5 @@
 {
-  "DISCORD_LINK": "www.discord.com"
+  "DISCORD_LINK": "www.discord.com",
+  "YOUTUBE_LINK": "www.youtube.com",
+  "NO_COMMAND": "mordo nie ma takiej komendy @{nick}"
 }

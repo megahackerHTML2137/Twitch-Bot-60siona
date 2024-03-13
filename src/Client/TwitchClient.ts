@@ -43,11 +43,11 @@ class TwitchClient {
     });
   }
 
-  private handleMessage(twitchMessage: string) {
+  private async handleMessage(twitchMessage: string) {
     const parsedMessage: ParsedTwitchMessage | null = parseMessage(twitchMessage);
 
     if (parsedMessage) {
-      const botAnswer: BotAnswer = handleCommand(parsedMessage);
+      const botAnswer: BotAnswer = await handleCommand(parsedMessage);
 
       if (botAnswer) {
         this.sendMessage(botAnswer);

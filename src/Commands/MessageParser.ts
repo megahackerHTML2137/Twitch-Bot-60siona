@@ -12,7 +12,7 @@ import type {
 
 export default function parseMessage(rawMessage: string): ParsedTwitchMessage | null {
   let parsedMessage: ParsedTwitchMessage = {
-    tags: null,
+    tags: {},
     source: null,
     command: null,
     message: '',
@@ -48,16 +48,6 @@ export default function parseMessage(rawMessage: string): ParsedTwitchMessage | 
   if (endIndex != rawMessage.length) {
     index = endIndex + 1;
     rawParameters = rawMessage.slice(index);
-  }
-
-  parsedMessage.command = parseCommand(rawCommand);
-
-  if (parsedMessage.command === null) {
-    return null;
-  } else {
-    if (rawTags !== null) {
-      parsedMessage.tags = parseTags(rawTags);
-    }
   }
 
   parsedMessage.command = parseCommand(rawCommand);

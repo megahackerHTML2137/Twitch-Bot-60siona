@@ -1,8 +1,8 @@
 export interface ParsedTwitchMessage {
-  tags: TwitchParsedTags | null;
-  source: TwitchParsedSource | null;
-  command: TwitchParsedCommand | null;
-  message: string | null;
+  tags: TwitchParsedTags;
+  source: TwitchParsedSource;
+  command: TwitchParsedCommand;
+  message: string;
 }
 
 // Command
@@ -17,9 +17,7 @@ interface TwitchCommand {
 export type TwitchParsedCommand = TwitchCommand | null;
 
 // Tags
-export type TwitchParsedTags = {
-  [key: string]: BadgeObjectsDictionary | EmotesObjectsDictionary | EmotesID | string | null;
-};
+export type TwitchParsedTags = Record<string, unknown>;
 
 export type BadgeObjectsDictionary = { [key: string]: string };
 

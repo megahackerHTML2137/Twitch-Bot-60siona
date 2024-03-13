@@ -5,6 +5,7 @@ export interface AnswerType {
   type: string;
   channel?: string;
   message: string;
+  nick?: string;
 }
 
 export type BotAnswer = AnswerType | null;
